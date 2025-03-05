@@ -1,11 +1,16 @@
-import React from "react";
-import { useAuth } from "../../context/AuthProvider"; // Asegúrate de que la ruta sea correcta
-import "./Header.css";
+import React, { useEffect } from "react";
+import { useAuth } from "../../context/AuthProvider";
 import { FaUser } from "react-icons/fa";
 import logo from "../../assets/regcon-logo.png";
+import { initFlowbite } from "flowbite";
 
 const Header = () => {
-    const { user, logout } = useAuth(); // Accedemos al estado de autenticación y a la función de logout
+    const { user, logout } = useAuth();
+
+    // Inicializar Flowbite (para el menú desplegable)
+    useEffect(() => {
+        initFlowbite();
+    }, []);
 
     return (
         <nav className="bg-accent border-gray-200 dark:bg-gray-900">
@@ -35,7 +40,7 @@ const Header = () => {
                                 <span className="sr-only">Abrir menú de usuario</span>
                                 <img
                                     className="w-8 h-8 rounded-full"
-                                    src={user.image || "/default-user.png"} // Usa una imagen por defecto si no hay una
+                                    src={user.user_pic || "/default-user.png"} // Usa una imagen por defecto si no hay una
                                     alt="Foto de perfil"
                                 />
                             </button>
@@ -47,7 +52,7 @@ const Header = () => {
                             >
                                 <div className="px-4 py-3">
                                     <span className="block text-sm text-gray-900 dark:text-white">
-                                        {user.name || "Usuario"}
+                                        {user.first_name || "Usuario"}
                                     </span>
                                     <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
                                         {user.email || "usuario@example.com"}

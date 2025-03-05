@@ -8,6 +8,21 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Función para obtener la información completa del usuario
+    const fetchUserDetails = async (userId) => {
+        try {
+            const response = await fetch(`${apiUrl}/users/${userId}`);
+            const data = await response.json();
+            if (data.message === "Success") {
+                return data.data; // Devuelve la información completa del usuario
+            }
+            return null;
+        } catch (error) {
+            console.error("Error obteniendo detalles del usuario:", error);
+            return null;
+        }
+    };
+
     useEffect(() => {
         console.log("Revisando autenticación del usuario...");
 
@@ -15,7 +30,7 @@ export const AuthProvider = ({ children }) => {
             credentials: "include", // Para enviar cookies automáticamente
         })
             .then(response => response.json())
-            .then(data => {
+            .then(async (data) => {
                 if (data.token) {
                     console.log("Token obtenido desde el backend con éxito.");
                     localStorage.setItem("authToken", data.token);
@@ -24,11 +39,15 @@ export const AuthProvider = ({ children }) => {
                         // Decodificar el token
                         const decoded = jwtDecode(data.token);
                         if (decoded.id) {
-                            localStorage.setItem("user_id", decoded.id);
-                            localStorage.setItem("userType", decoded.userType);
-
-                            // Actualizar el estado
-                            setUser(decoded);
+                            // Obtener la información completa del usuario
+                            const userDetails = await fetchUserDetails(decoded.id);
+                            if (userDetails) {
+                                // Actualizar el estado con la información completa
+                                setUser({
+                                    ...decoded,
+                                    ...userDetails, // Incluye user_pic, name, etc.
+                                });
+                            }
                         }
                     } catch (error) {
                         console.error("Error al decodificar el token:", error);
@@ -62,10 +81,15 @@ export const AuthProvider = ({ children }) => {
                 try {
                     const decoded = jwtDecode(data.token);
                     if (decoded.id) {
-                        localStorage.setItem("user_id", decoded.id);
-                        localStorage.setItem("userType", decoded.userType);
-    
-                        setUser(decoded);
+                        // Obtener la información completa del usuario
+                        const userDetails = await fetchUserDetails(decoded.id);
+                        if (userDetails) {
+                            // Actualizar el estado con la información completa
+                            setUser({
+                                ...decoded,
+                                ...userDetails, // Incluye user_pic, name, etc.
+                            });
+                        }
                     }
                 } catch (error) {
                     console.error("Error al decodificar el token:", error);
