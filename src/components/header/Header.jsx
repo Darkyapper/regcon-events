@@ -3,14 +3,22 @@ import { useAuth } from "../../context/AuthProvider";
 import { FaUser } from "react-icons/fa";
 import logo from "../../assets/regcon-logo.png";
 import { initFlowbite } from "flowbite";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate para redirigir
 
 const Header = () => {
     const { user, logout } = useAuth();
+    const navigate = useNavigate(); // Hook para redirigir
 
     // Inicializar Flowbite (para el menú desplegable)
     useEffect(() => {
         initFlowbite();
     }, []);
+
+    // Función para manejar el cierre de sesión
+    const handleLogout = () => {
+        logout(); // Llama a la función logout del AuthProvider
+        navigate("/login"); // Redirige al usuario a la página de inicio de sesión
+    };
 
     return (
         <nav className="bg-accent border-gray-200 dark:bg-gray-900">
@@ -77,7 +85,7 @@ const Header = () => {
                                     </li>
                                     <li>
                                         <button
-                                            onClick={logout}
+                                            onClick={handleLogout} // Llama a handleLogout al hacer clic
                                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                                         >
                                             Cerrar sesión
