@@ -8,7 +8,7 @@ const Search = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const limit = 3;
 
-    useEffect(() => {
+    /*useEffect(() => {
         fetchCategories();
     }, [offset]);
 
@@ -22,7 +22,7 @@ const Search = () => {
         } catch (error) {
             console.error("Error fetching categories:", error);
         }
-    };
+    };*/
 
     return (
         <form className="max-w-4xl w-full mx-auto mt-4">
