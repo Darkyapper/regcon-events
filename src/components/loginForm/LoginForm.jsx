@@ -131,7 +131,7 @@ export default function LoginForm() {
                         </button>
                     </div>
                     <p className='pics-as mt-2 text-center text-sm'>
-                        ¿Aún no tienes una cuenta? <a className="just-it-a" href="/register">¡Crea una aquí!</a>
+                        ¿Aún no tienes una cuenta? <a className="hover:underline just-it-a" href="/register">¡Crea una aquí!</a>
                     </p>
                 </form>
             </div>

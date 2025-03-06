@@ -23,8 +23,30 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Función para cargar el usuario desde localStorage
+    const loadUserFromLocalStorage = () => {
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+                if (decoded.id && userDetails) {
+                    setUser({
+                        ...decoded,
+                        ...userDetails, // Incluye user_pic, name, etc.
+                    });
+                }
+            } catch (error) {
+                console.error("Error al decodificar el token:", error);
+            }
+        }
+    };
+
     useEffect(() => {
         console.log("Revisando autenticación del usuario...");
+
+        // Cargar el usuario desde localStorage al inicio
+        loadUserFromLocalStorage();
 
         fetch(`${apiUrl}/auth/me`, {
             credentials: "include", // Para enviar cookies automáticamente
@@ -42,6 +64,9 @@ export const AuthProvider = ({ children }) => {
                             // Obtener la información completa del usuario
                             const userDetails = await fetchUserDetails(decoded.id);
                             if (userDetails) {
+                                // Guardar la información completa en localStorage
+                                localStorage.setItem("userDetails", JSON.stringify(userDetails));
+
                                 // Actualizar el estado con la información completa
                                 setUser({
                                     ...decoded,
@@ -60,12 +85,30 @@ export const AuthProvider = ({ children }) => {
             .finally(() => setLoading(false));
     }, []);
 
-    const logout = () => {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("userType");
-        
-        setUser(null);
+    const logout = async () => {
+        try {
+            // Hacer una solicitud al backend para cerrar la sesión
+            const response = await fetch(`${apiUrl}/logout`, {
+                method: "POST",
+                credentials: "include", // Para manejar cookies
+            });
+    
+            if (response.ok) {
+                // Eliminar el token y los datos del usuario del localStorage
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("userDetails");
+    
+                // Actualizar el estado de autenticación
+                setUser(null);
+    
+                // Redirigir al usuario a la página de inicio de sesión
+                window.location.href = "/login"; // Forzar una recarga de la página
+            } else {
+                console.error("Error al cerrar sesión en el backend");
+            }
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
     };
 
     const refreshAuth = async () => {
@@ -84,6 +127,9 @@ export const AuthProvider = ({ children }) => {
                         // Obtener la información completa del usuario
                         const userDetails = await fetchUserDetails(decoded.id);
                         if (userDetails) {
+                            // Guardar la información completa en localStorage
+                            localStorage.setItem("userDetails", JSON.stringify(userDetails));
+
                             // Actualizar el estado con la información completa
                             setUser({
                                 ...decoded,
