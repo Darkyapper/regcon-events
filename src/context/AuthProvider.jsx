@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
                 setUser(null);
     
                 // Redirigir al usuario a la página de inicio de sesión
-                window.location.href = "/login"; // Forzar una recarga de la página
+                window.location.href = "/"; // Forzar una recarga de la página
             } else {
                 console.error("Error al cerrar sesión en el backend");
             }
