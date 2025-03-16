@@ -12,9 +12,9 @@ module.exports = {
       colors: {
         text: "#040316", // Texto claro
         background: "#fbfbfe", // Fondo claro
-        primary: "#2f27ce", // Azul claro
-        secondary: "#dddbff",
-        accent: "#443dff",
+        primary: "#f47424", // Azul claro
+        secondary: "#ffc58f",
+        accent: "#ff803d",
         cards: "#F3F3F6",
         select: "#EBEBEE",
 

@@ -32,7 +32,10 @@ export default function EventDetails() {
     return (
         <div>
             <div className="mt-4 mb-4 md:flex">
-                <img src={event.event_image} alt={event.event_name} className="w-[26rem] justify-center place-self-center md:justify-start md:ml-4 md:place-self-start md:w-[600px] md:h-[420px] rounded-lg" />
+                <div className="w-[25.75rem] h-[18rem] md:w-[1100px] md:h-[420px] overflow-hidden rounded-lg md:ml-4">
+                    <img src={event.event_image} alt={event.event_name}
+                        className="w-full h-full object-cover" />
+                </div>
                 <div className="p-6 bg-secondary rounded-lg mt-4 md:mt-0 md:ml-4 md:mr-4 md:h-[420px] md:size-full">
                     <h1 className="text-center text-xl md:text-2xl poppins-font font-bold">{event.event_name}</h1>
                     <div className="mt-4 text-justify text-base md:h-[130px]">

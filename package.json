@@ -15,6 +15,7 @@
     "@tiptap/pm": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
     "apexcharts": "^3.46.0",
+    "axios": "^1.8.1",
     "chart.js": "^4.4.6",
     "flowbite-react": "^0.10.2",
     "flowbite-typography": "^1.0.5",

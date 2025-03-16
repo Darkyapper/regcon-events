@@ -4,7 +4,7 @@ import logo from "../../assets/regcon-logo.png";
 
 const Footer = () => {
     return (
-        <footer className="bg-accent shadow-sm dark:bg-gray-900">
+        <footer className="bg-primary shadow-sm dark:bg-gray-900">
             <div className="w-full p-4 md:py-8">
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <a
