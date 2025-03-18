@@ -82,7 +82,7 @@ export default function LoginForm() {
     };
 
     return (
-        <div className={`mt-6 main-container ${isLoading ? 'cursor-wait' : ''}`}>
+        <div className={`mt-10 mb-10 main-container ${isLoading ? 'cursor-wait' : ''}`}>
             <div className='custom-form'>
                 <form className="poppins-font max-w-sm mx-auto bg-cards dark:bg-dark-cards text-text dark:text-dark-text shadow-2xl p-6 rounded-lg"
                     onSubmit={handleSubmit}

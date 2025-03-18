@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import EventPage from './pages/EventPage';
 import TicketBuy from './pages/TicketBuy';
+import PaymentCancel from './pages/PaymentCancel';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/events/:id" element={<EventPage />} />
           <Route path="/buy-tickets" element={<TicketBuy />} />
+          <Route path="/cancel-payment" element={<PaymentCancel />} />
+          <Route path="*" element={<NotFound/>} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -44,34 +44,55 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         console.log("Revisando autenticación del usuario...");
-
+    
         // Cargar el usuario desde localStorage al inicio
         loadUserFromLocalStorage();
-
+    
         fetch(`${apiUrl}/auth/me`, {
             credentials: "include", // Para enviar cookies automáticamente
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 401) {
+                    console.warn("Sesión caducada. Eliminando datos...");
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("userDetails");
+                    setUser(null);
+    
+                    // Verificar si ya se mostró el mensaje en esta sesión
+                    if (!sessionStorage.getItem("sessionExpired")) {
+                        alert("Tu sesión ha caducado. Inicia sesión nuevamente.");
+                        sessionStorage.setItem("sessionExpired", "true");
+                    }
+    
+                    // Verificar si ya se redirigió en esta sesión
+                    if (!sessionStorage.getItem("redirected")) {
+                        window.location.href = "/"; // Redirigir solo una vez
+                        sessionStorage.setItem("redirected", "true");
+                    }
+    
+                    throw new Error("Sesión caducada");
+                }
+                return response.json();
+            })
             .then(async (data) => {
                 if (data.token) {
                     console.log("Token obtenido desde el backend con éxito.");
                     localStorage.setItem("authToken", data.token);
-
+    
                     try {
-                        // Decodificar el token
                         const decoded = jwtDecode(data.token);
                         if (decoded.id) {
-                            // Obtener la información completa del usuario
                             const userDetails = await fetchUserDetails(decoded.id);
                             if (userDetails) {
-                                // Guardar la información completa en localStorage
                                 localStorage.setItem("userDetails", JSON.stringify(userDetails));
-
-                                // Actualizar el estado con la información completa
                                 setUser({
                                     ...decoded,
                                     ...userDetails, // Incluye user_pic, name, etc.
                                 });
+    
+                                // Reiniciar los flags porque la sesión se restauró
+                                sessionStorage.removeItem("sessionExpired");
+                                sessionStorage.removeItem("redirected");
                             }
                         }
                     } catch (error) {
@@ -84,6 +105,7 @@ export const AuthProvider = ({ children }) => {
             .catch(error => console.error("Error obteniendo autenticación:", error))
             .finally(() => setLoading(false));
     }, []);
+    
 
     const logout = async () => {
         try {
@@ -92,15 +114,15 @@ export const AuthProvider = ({ children }) => {
                 method: "POST",
                 credentials: "include", // Para manejar cookies
             });
-    
+
             if (response.ok) {
                 // Eliminar el token y los datos del usuario del localStorage
                 localStorage.removeItem("authToken");
                 localStorage.removeItem("userDetails");
-    
+
                 // Actualizar el estado de autenticación
                 setUser(null);
-    
+
                 // Redirigir al usuario a la página de inicio de sesión
                 window.location.href = "/"; // Forzar una recarga de la página
             } else {
@@ -120,7 +142,7 @@ export const AuthProvider = ({ children }) => {
             if (data.token) {
                 console.log("Token actualizado exitosamente.");
                 localStorage.setItem("authToken", data.token);
-    
+
                 try {
                     const decoded = jwtDecode(data.token);
                     if (decoded.id) {
